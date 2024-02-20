@@ -1,6 +1,5 @@
 class FavoritesController < ApplicationController
-  before_action :set_blog, only: [:create]
-  before_action :set_id, only: [:destroy]
+  before_action :set_blog
 
   def create
     respond_to do |format|
@@ -17,12 +16,12 @@ class FavoritesController < ApplicationController
   end
 
   def set_blog
-    @blog = Blog.find(params[:blog_id])
-  end
-
-  def set_id
-    favorite = Favorite.find(params[:id])
-    @blog = Blog.find(favorite.blog_id)
+    if params[:blog_id].nil?
+      favorite = Favorite.find(params[:id])
+      @blog = Blog.find(favorite.blog_id)
+    else
+      @blog = Blog.find(params[:blog_id])
+    end
   end
 
 end
