@@ -1,13 +1,28 @@
 class FavoritesController < ApplicationController
+  before_action :set_blog, only: [:create]
+  before_action :set_id, only: [:destroy]
 
   def create
-    current_user.favorites.create(blog_id: params[:blog_id])
-    redirect_to blogs_path
+    respond_to do |format|
+      current_user.favorites.create(blog_id: params[:blog_id])
+      format.js { render :create }
+    end
   end
 
   def destroy
-    current_user.favorites.find_by(id: params[:id]).destroy
-    redirect_to blogs_path
+    respond_to do |format|
+      current_user.favorites.find_by(id: params[:id]).destroy
+      format.js { render :destroy }
+    end
+  end
+
+  def set_blog
+    @blog = Blog.find(params[:blog_id])
+  end
+
+  def set_id
+    favorite = Favorite.find(params[:id])
+    @blog = Blog.find(favorite.blog_id)
   end
 
 end
